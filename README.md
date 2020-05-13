@@ -1,5 +1,5 @@
 # Revit Dynamo - Pile Cap Grid Intersect Location & Offset
-Revit does not have a grid intersect parameter for the structural foundation category. However, the structural column category has a parameter called Column Location Mark that indicates the associated nearest grid intersection. This script associates a structural column to the pile cap directly supporting it.  Also, the top of pile cap elevation from user selected reference level and sea level datum offsets are exported as each pile cap elevation vary due to grade elevation.  Ultimately, the pile cap type, grid line intersect, associated column, offsets, and pile cap coordinates from project base point get exported to the included Excel spreadsheet (Pile_Cap-Type&Location-Schedule.xlsx). This workflow and spreadsheet is beneficial during the design development phase when coordinating with the geotechnical engineer to design the pile cap foundation system.  After the model data is exported, the structural engineer would need to add the loads at the base of the columns to the spreadsheet before distributing.    
+Revit does not have a grid intersect parameter for the structural foundation category. However, the structural column category has a parameter called Column Location Mark that indicates the associated nearest grid intersection. This script associates a structural column to the pile cap directly supporting it.  Also, the top of pile cap elevation from user selected reference level and sea level datum offsets are exported as each pile cap elevation vary due to grade elevation.  Ultimately, the pile cap type, grid line intersect, associated column, offsets, and pile cap coordinates from project base point get exported to the included Excel spreadsheet (Pile_Cap-Type&Location-Schedule.xlsx). This workflow and spreadsheet is beneficial during the design development phase when coordinating with the geotechnical engineer to design the pile cap foundation system.  As a bi-product, this script serves as a good QA/QC modeling tool making sure all pile caps are centered with associated column.  After the model data is exported, the structural engineer would need to add the loads at the base of the columns to the spreadsheet before distributing.    
 
 ## Getting Started
 Environment setup regarding script development logistics.
@@ -33,44 +33,79 @@ Environment setup regarding script development logistics.
 #### Dynamo Script Layout
 Overall graph view
   <p align="center">
-   <img src="https://user-images.githubusercontent.com/44215479/81614036-4cbb2f00-9394-11ea-9b2a-2e84bdc03692.png" width="1000">
+   <img src="https://user-images.githubusercontent.com/44215479/81774584-c55ae200-949f-11ea-86df-955061f08a28.png" width="1200">
   </p>
 
 1. User Input
-   * Uses Data Shapes package to create input types and to be used in MultipleInputForm++ (obtain user input)
+   * At the beginning of the project, select Excel file for exporting data and reference level that pile caps are associated to in the model.
    <p align="center">
-    <img src="https://user-images.githubusercontent.com/44215479/81614113-68bed080-9394-11ea-9d35-36fa42638d04.png" width="600">
+    <img src="https://user-images.githubusercontent.com/44215479/81775072-de17c780-94a0-11ea-8c33-974efff814cb.png" width="300">
    </p>
 
-2. Example of Backend Process Per User Input
-   * This process makes the selected linked CAD file easily accessed for processing by removing nested lists
+2. Structural Columns Backend Process & User Control to Filter Project Columns
+   * This group of nodes takes all structural columns at specified reference level (pile cap associated level).
+   * At the beginning of a project, user to update or add search String node(s) to get columns supported by a pile cap
+     - Helps to eliminate duplicates (i.e. concrete encasement is modeled as a concrete column)
    <p align="center">
-    <img src="https://user-images.githubusercontent.com/44215479/81614285-ac193f00-9394-11ea-80ee-41c54d201a2e.png" width="600">
+    <img src="https://user-images.githubusercontent.com/44215479/81776124-13bdb000-94a3-11ea-951a-623908c2a1ab.png" width="800">
    </p>
 
-3. User Input
-   * Uses Data Shapes package to create input types and to be used in MultipleInputForm++ (obtain user input)
-   * Creates consolidated list taking user selection from (2.) and model family type information from (1.).
+3. Structural Backend Process that Gets Required Data to Be Exported
+   * The data being retrieved and prepared for export are the x and y coordinates (feet from origin), Column Location Mark (grid intersect), and column family name and type
+   * **The column coordinates is the key component used to match to associated pile cap**
    <p align="center">
-    <img src="https://user-images.githubusercontent.com/44215479/81615475-82f9ae00-9396-11ea-8b5c-f72cbfe847e6.png" width="600">
+    <img src="https://user-images.githubusercontent.com/44215479/81777051-e6720180-94a4-11ea-9c7a-23e9efbc0ca2.png" width="600">
    </p>
 
-4. Example of Backend Process Per User Input
-   * Each process accesses user input by associated list index
-     * The selected layer will be used to access 3D lines on that layer to be converted to curves (using BimmorphNodes - CAD.CurvesFromCADLayers node)
-     * The selected structural frame or structural column type is assigned to curve if user has checked the box for type to be modeled
-     * The selected level is assigned for element level association.
+4. Structural Foundation Backend Process & User Control to Filter Project Foundation Type
+   * Monitors other available foundation parameters that can be exported if desired (user will need to setup output nodes if desired)
+   * At the beginning of a project, user to update or add search String node(s) to get structural foundation type.  In this case, pile caps is part of the foundation system and uses the project naming convention to filter all pile caps.
    <p align="center">
-    <img src="https://user-images.githubusercontent.com/44215479/81615475-82f9ae00-9396-11ea-8b5c-f72cbfe847e6.png" width="600">
+    <img src="https://user-images.githubusercontent.com/44215479/81777707-44ebaf80-94a6-11ea-8868-a296b6073257.png" width="600">
    </p>
 
-5. Revit Model Element Created
-   * StructuralFraming.BeamByCurve or StructuralFraming.ColumnByCurve Node is used to take the user input from (4.) to generate a Revit model element.
-   * This is repeated for all curves filtered by user selected CAD Layer.
+5. Structural Foundation Backend Process to Get Pile Cap Coordinates for Column Mapping
+   * **These are key nodes to get pile cap coordinates to use for matching to associated column**
    <p align="center">
-    <img src="https://user-images.githubusercontent.com/44215479/81616796-03b9a980-9399-11ea-9cee-2acacfb1cf87.png" width="600">
+    <img src="https://user-images.githubusercontent.com/44215479/81778037-e7a42e00-94a6-11ea-9427-ff2aab895c34.png" width="600">
    </p>
    
+6. Backend Process that Maps Column to Associated Pile Cap
+   * **This is the process where column and associated pile cap are matched using their (x,y) coordinates**
+   * The list index of the pile cap's matching coordinate values is stored as the value of the matching column coordinate list index in List.Map node.
+   * If no match is found, List.Map records a value of '-1' for matching column coordinate list index.
+   * '-1' is replaced by blank if no pile cap is matched.
+   <p align="center">
+    <img src="https://user-images.githubusercontent.com/44215479/81778507-db6ca080-94a7-11ea-9c89-c585424343d5.png" width="600">
+   </p>
+   
+7. Structural Foundation Backend Process Mapping Pile Cap Name & Preparing for Export
+   * Reorganizes pile cap name to map to associated coordinates using List.Map result as template)
+   * Replaces blank values with "NO MATCH" to be displayed to user
+     - Helpful hint to user to check what is causing this
+     - Possible that pile cap and column centerlines not aligned (requires model clean-up)
+     - Possible that pile cap is supporing a wall
+     - Possible that column is supported by a larger pile cap (similar to a mat foundation)
+   <p align="center">
+    <img src="https://user-images.githubusercontent.com/44215479/81779459-9e091280-94a9-11ea-8d6c-29f37117a75e.png" width="600">
+   </p>
+   
+8. Structural Foundation Backend Process that Gets Required Data for Offset Distance Exports
+   * Exports "Offset" distance from Sea Level Datum and from Reference Level selected by user in (1.).
+   <p align="center">
+    <img src="https://user-images.githubusercontent.com/44215479/81780412-58e5e000-94ab-11ea-82ae-8bc6c0f166d5.png" width="600">
+   </p>
+
+9. Backend Process that Consolidates All Export Data Per Each Pile Cap
+   <p align="center">
+    <img src="https://user-images.githubusercontent.com/44215479/81780781-f3462380-94ab-11ea-88c0-abd275b63830.png" width="600">
+   </p>
+   
+10. Output Process to Selected Excel Spreadsheet (Pile_Cap-Type&Location-Schedule.xlsx)
+   <p align="center">
+    <img src="https://user-images.githubusercontent.com/44215479/81781140-897a4980-94ac-11ea-81fb-4400c6642253.png" width="600">
+   </p>
+  
 #### Mapping Script to UI
 1. UI associated to (Dynamo Script Layout 2.)
    <p align="center">
