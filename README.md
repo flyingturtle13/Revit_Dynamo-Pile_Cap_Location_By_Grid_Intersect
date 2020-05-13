@@ -1,12 +1,5 @@
 # Revit Dynamo - Pile Cap Grid Intersect Location & Offset
-This script helps to enhance coordination between architects and structural eningeers during design development.  This script is especially useful for complicated structures and automates converting a 3D wireframe (DWG format) to structural members in Revit during the design coordination iterative process. This then serves as a foundation model for the structural engineer to update member sizes or add structural members in Revit after structural analysis is performed.
-
-The script requires a DWG file format linked into the Revit model. Using Dynamo Player, user is prompted to selected which linked CAD element to process.  Based on layers in the CAD file, user can specify which model category to apply to a layer. It is important for the structural engineer to communicate to the architect what structural member layer types and how to assign 3D wireframe elements to which layers in their authoring software (i.e. Rhino). This is especially important when differentiating between structural columns and structural framing elements. This script only applies to modeling structural elements to a 3D wireframe. 
-
-**NOTE:** 
-  1. The Model Examples Folder contains a sample 3D wireframe and output structural Revit model.
-  2. User to load desired structural families prior to running script.
-  3. User still needs to update element parameters such as Structural Usage or Start/End Connections.
+Revit does not have a grid intersect parameter for the structural foundation category. However, the structural column category has a parameter called Column Location Mark that indicates the associated nearest grid intersection. This script associates a structural column to the pile cap directly supporting it.  Also, the top of pile cap elevation from user selected reference level and sea level datum offsets are exported as each pile cap elevation vary due to grade elevation.  Ultimately, the pile cap type, grid line intersect, associated column, offsets, and pile cap coordinates from project base point get exported to the included Excel spreadsheet (Pile_Cap-Type&Location-Schedule.xlsx). This workflow and spreadsheet is beneficial during the design development phase when coordinating with the geotechnical engineer to design the pile cap foundation system.  After the model data is exported, the structural engineer would need to add the loads at the base of the columns to the spreadsheet before distributing.    
 
 ## Getting Started
 Environment setup regarding script development logistics.
@@ -21,8 +14,7 @@ Environment setup regarding script development logistics.
   * dyn
 
 * Additional Library Packages Implemented: </br>
-  * Data Shapes
-  * BimorphNodes
+  * Clockwork
 
 ## Dynamo Script Development & Structure
 #### Script features and specs.
@@ -30,13 +22,13 @@ Environment setup regarding script development logistics.
   - Revit (any version with Dynamo 2.1 and above installed)
     
 * User Interface
-  - User executes Dynamo Player to initiate script
-  -Data Shapes MultipleInputForm++ node used to obtain user input to perform structural modeling task
+  - Run script through Dynamo add-in
 
 * Setup Requirements and Capabilities
-  - Structural engineer to communicate/coordinate with architect what structural member Layer types needed and how to assign 3D wireframe elements to appropriate Layer
-  - User to load desired structural families prior to running script.
-  - User still needs to update element parameters such as Structural Usage or Start/End Connections.
+  - User to select target Excel file to export data through File Path node. 
+  - Select reference Level to filter columns attached to associated pile caps and to calculate top of pile cap offset from level.
+  - Per project, revise pile cap search String node based on project family type naming convention.
+  - Per project, revise structural column search String node(s) based on project family type naming convention.
   
 #### Dynamo Script Layout
 Overall graph view
