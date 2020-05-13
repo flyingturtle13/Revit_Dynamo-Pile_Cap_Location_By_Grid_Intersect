@@ -47,7 +47,7 @@ Overall graph view
    * At the beginning of a project, user to update or add search String node(s) to get columns supported by a pile cap
      - Helps to eliminate duplicates (i.e. concrete encasement is modeled as a concrete column)
    <p align="center">
-    <img src="https://user-images.githubusercontent.com/44215479/81776124-13bdb000-94a3-11ea-951a-623908c2a1ab.png" width="800">
+    <img src="https://user-images.githubusercontent.com/44215479/81784696-1b388580-94b2-11ea-8c21-6dd609911271.png" width="800">
    </p>
 
 3. Structural Backend Process that Gets Required Data to Be Exported
@@ -93,64 +93,46 @@ Overall graph view
 8. Structural Foundation Backend Process that Gets Required Data for Offset Distance Exports
    * Exports "Offset" distance from Sea Level Datum and from Reference Level selected by user in (1.).
    <p align="center">
-    <img src="https://user-images.githubusercontent.com/44215479/81780412-58e5e000-94ab-11ea-82ae-8bc6c0f166d5.png" width="600">
+    <img src="https://user-images.githubusercontent.com/44215479/81780412-58e5e000-94ab-11ea-82ae-8bc6c0f166d5.png" width="400">
    </p>
 
 9. Backend Process that Consolidates All Export Data Per Each Pile Cap
    <p align="center">
-    <img src="https://user-images.githubusercontent.com/44215479/81780781-f3462380-94ab-11ea-88c0-abd275b63830.png" width="600">
+    <img src="https://user-images.githubusercontent.com/44215479/81780781-f3462380-94ab-11ea-88c0-abd275b63830.png" width="300">
    </p>
    
 10. Output Process to Selected Excel Spreadsheet (Pile_Cap-Type&Location-Schedule.xlsx)
    <p align="center">
-    <img src="https://user-images.githubusercontent.com/44215479/81781140-897a4980-94ac-11ea-81fb-4400c6642253.png" width="600">
+    <img src="https://user-images.githubusercontent.com/44215479/81781140-897a4980-94ac-11ea-81fb-4400c6642253.png" width="300">
    </p>
   
 #### Mapping Script to UI
-1. UI associated to (Dynamo Script Layout 2.)
-   <p align="center">
-    <img src="https://user-images.githubusercontent.com/44215479/81620527-f6082200-93a0-11ea-9574-f8088ccf2598.png" width="300">
-   </p>
+<p align="center">
+ <img src="https://user-images.githubusercontent.com/44215479/81782871-4ff70d80-94af-11ea-9150-3c93c02cecfc.png" width="600">
+</p>
 
-2. UI associated to (3.) resulting from user input from (Dynamo Script Layout 2.) and information from (Dynamo Script Layout 1.).
-   <p align="center">
-    <img src="https://user-images.githubusercontent.com/44215479/81617573-8b53e800-939a-11ea-9cbd-500da098e4f4.png" width="300">
-   </p>
+1. Dynamo Script Layout 3. - The Column Location Mark
+2. Dynamo Script Layout 6. - Performing mapping process
+3. Dynamo Script Layout 1. - User to select pile cap associated level as reference level in User Input
+4. Dynamo Script Layout 8. - Gets reported out
 
-3. Resulting Output after applying Revit structural elments to column layer and brace layer associated to (Dynamo Script Layout 5.).
-   <p align="center">
-    <img src="https://user-images.githubusercontent.com/44215479/81617857-0cab7a80-939b-11ea-8f89-c6af9464e659.png" width="600">
-   </p>
-       
 ## Running Script & User Implementation Instructions
 1. Clone or download project. </br>
-2. In own Revit project Link CAD in example 3D wireframe model (3D_Wireframe-Example.dwg) in Model Examples folder or own wireframe model.
-3. User to load desired structural families prior to running script.
-4. Open Dynamo Player and select folder with 3DWireframe_To_RevitModel_Converter.dyn to display script (DYN).
-   <p align="center">
-    <img src="https://user-images.githubusercontent.com/44215479/81618624-99a30380-939c-11ea-9b06-330fc01e681b.png" width="600">
-   </p>
-5. Follow user prompt and select linked CAD file to process
-   <p align="center">
-    <img src="https://user-images.githubusercontent.com/44215479/81618864-2483fe00-939d-11ea-86ac-0ced8ec76c46.png" width="600">
-   </p>
-6. Follow next user prompt to auto model to 3D wireframe
-   <p align="center">
-    <img src="https://user-images.githubusercontent.com/44215479/81619185-d8858900-939d-11ea-8d82-66e4c6b33ee8.png" width="600">
-    <img src="https://user-images.githubusercontent.com/44215479/81619367-4631b500-939e-11ea-9639-4b78e9c18375.png" width="300">
-   </p>
-7. The following is the result of the input in (6.).
-   <p align="center">
-    <img src="https://user-images.githubusercontent.com/44215479/81619502-9ad53000-939e-11ea-99f6-36ce9b2f8cd1.png" width="600">
-   </p>
-8. Reapeat steps (4.) - (6.) until all desired elements are modeled.
-   <p align="center">
-    <img src="https://user-images.githubusercontent.com/44215479/81619897-6f9f1080-939f-11ea-9186-430a4e7f78ac.png" width="600">
-    <img src="https://user-images.githubusercontent.com/44215479/81619926-7f1e5980-939f-11ea-88c2-96035d71af86.png" width="600">
-   </p>
-9. Below is what the completed example should look like.  Strutural engineer or modeler can now clean-up and update model as needed in Revit.
-   <p align="center">
-    <img src="https://user-images.githubusercontent.com/44215479/81620165-14b9e900-93a0-11ea-9b99-7759930f09fc.png" width="600">
-   </p>
-
+2. In own Revit project or Pile Cap Location & Offset Export example in Model Example folder, open Dynamo and open *Structural-Pile_Cap_Location_And_Offset.dyn*.
+3. Ensure Clockwork package is installed. If not, use Package --> Search for Package --> Clockwork in Dynamo.
+4. As described in ***Dynamo Script Layout 1.***, use 'File Path' node to select included Excel file (*Pile_Cap_Schedule-Dynamo.xlsx*) and select a reference level in *Level* node (select level pile caps are associated to in model).
+5. Modify or add search 'String' node(s) for pile cap foundations and column types as described in ***Dynamo Script layout 2.*** and ***Dynamo Script layout 4.***
+6. Select *Run* and check Excel spreadsheet output.</br>
+   a. Raw output from Dynamo script specified sheet in User Input.
+      <p align="center">
+       <img src="https://user-images.githubusercontent.com/44215479/81785613-58e9de00-94b3-11ea-9017-8a953f7dd090.png" width="600">
+      </p>
+   b. Auto-generated values for distribution and for structural engineer to add loads at top of pile caps.
+      <p align="center">
+       <img src="https://user-images.githubusercontent.com/44215479/81785906-c5fd7380-94b3-11ea-8c5f-207235d3d3bc.png" width="1000">
+      </p>
+   c. QC check for correct number of pile caps and types being reported for quantity takeoff.
+      <p align="center">
+       <img src="https://user-images.githubusercontent.com/44215479/81786055-0826b500-94b4-11ea-8761-f2781384420b.png" width="600">
+      </p>
 
